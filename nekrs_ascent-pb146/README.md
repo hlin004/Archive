@@ -2,7 +2,7 @@
 
 **Code:** NekRS  
 **Purpose:** How to use Ascent with NekRS for in-situ visualization  
-**Status:** Reference example
+**Status:** Reference example  
 **Location:** https://github.com/hlin004/Archive/tree/main/nekrs_ascent-pb146
 
 ## Geometry/Mesh
