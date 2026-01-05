@@ -1,0 +1,42 @@
+# this block are data pipelines
+#   each entry in pipelines: executes a series of functions from top to bottom,
+#   results of prior functions can be used in later calls of the same pipeline
+-
+  action: "add_pipelines"
+  pipelines:
+    pl1:
+      f1:
+        type: "contour"
+        params:
+          field: "temperature"
+          iso_values: [40, 50, 60]
+-
+  action: "add_scenes"
+  scenes:
+    s1:
+      plots:
+        p1:
+          type: "pseudocolor"
+          field: "pressure"
+          pipeline: "pl1"
+      renders:
+        r1:
+          camera:
+            position: [-30.32, -30.99, 34.63]
+            look_at: [-0.006, -0.006, 0.932]
+            up: [0.146, 0.659, 0.737]
+            zoom: 2.0
+          image_prefix: "pb_%04d"
+    s2:
+      plots:
+        p1:
+          type: "pseudocolor"
+          field: "ghosts"
+      renders:
+        r1:
+          camera:
+            position: [-30.32, -30.99, 34.63]
+            look_at: [-0.006, -0.006, 0.932]
+            up: [0.146, 0.659, 0.737]
+            zoom: 2.0
+          image_prefix: "pb_ghosts_%04d"
