@@ -1,0 +1,29 @@
+#
+# nek parameter file
+#
+[GENERAL]
+#startFrom="run03/tgv0.f00013" 
+#stopAt = numSteps
+#numSteps = 10
+stopAt = endTime
+endTime = 31.83098862
+dt = 1e-03
+
+#writeControl = timeStep
+writeControl = runTime
+writeInterval = 1
+filtering=explicit
+filterModes=2
+filterWeight=0.01
+
+[PROBLEMTYPE]
+equation = incompNS
+
+[PRESSURE]
+residualTol = 1e-05
+residualProj = yes
+
+[VELOCITY]
+residualTol = 1e-06
+density = 1
+viscosity = 9.95e-06

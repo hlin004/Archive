@@ -1,0 +1,154 @@
+C-----------------------------------------------------------------------
+C  nek5000 user-file template
+C
+C  user specified routines:
+C     - userbc : boundary conditions
+C     - useric : initial conditions
+C     - uservp : variable properties
+C     - userf  : local acceleration term for fluid
+C     - userq  : local source term for scalars
+C     - userchk: general purpose routine for checking errors etc.
+C
+C-----------------------------------------------------------------------
+      subroutine uservp(ix,iy,iz,eg) ! set variable properties
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userf(ix,iy,iz,eg) ! set acceleration term
+c
+c     Note: this is an acceleration term, NOT a force!
+c     Thus, ffx will subsequently be multiplied by rho(x,t).
+c
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userq(ix,iy,iz,eg) ! set source term
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userbc(ix,iy,iz,f,eg) ! set up boundary conditions
+
+c     NOTE: This routine may or may not be called by every processor
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine useric(ix,iy,iz,eg) ! set up initial conditions
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e,eg
+      
+      u0 = 0.1
+
+      ux   = u0*sin(2*pi*x)*cos(2*pi*y)*cos(2*pi*z)
+      uy   = -u0*cos(2*pi*x)*sin(2*pi*y)*cos(2*pi*z)
+      uz   = 0.0
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userchk()
+      include 'SIZE'
+      include 'TOTAL'
+      
+      
+      parameter (lxyz=lx1*ly1*lz1*lelv)
+      real dux(lxyz), duy(lxyz), duz(lxyz)
+      real dvx(lxyz), dvy(lxyz), dvz(lxyz)
+      real dwx(lxyz), dwy(lxyz), dwz(lxyz)
+      real velxn(lxyz), velyn(lxyz), velzn(lxyz)
+      real ek(lxyz), dissip(lxyz)
+      real eksum, dissipsum
+
+      integer i, npts
+      npts = lx1*ly1*lz1*lelv  
+
+      call copy(velxn,vx,npts)
+      call copy(velyn,vy,npts)
+      call copy(velzn,vz,npts)
+      
+      call gradm1(dux,duy,duz,velxn)
+      call gradm1(dvx,dvy,dvz,velyn)
+      call gradm1(dwx,dwy,dwz,velzn)        
+      call col2(dux,bm1, npts)
+      call col2(duy,bm1, npts)
+      call col2(duz,bm1, npts)
+      call col2(dvx,bm1, npts)
+      call col2(dvy,bm1, npts)
+      call col2(dvz,bm1, npts)
+      call col2(dwx,bm1, npts)
+      call col2(dwy,bm1, npts)
+      call col2(dwz,bm1, npts)        
+        
+      do i = 1,npts
+        ek(i)=0.5*(velxn(i)**2+velyn(i)**2+velzn(i)**2)
+        dissip(i)=2*(dux(i)**2+dvy(i)**2+dwz(i)**2-
+     $            (dux(i)+dvy(i)+dwz(i))**2/3.d0)+
+     $            (dvx(i)+duy(i))**2+
+     $            (dwy(i)+dvz(i))**2+
+     $            (duz(i)+dwx(i))**2
+      enddo        
+        
+      call col2(ek,bm1, npts)
+      call col2(dissip,bm1, npts)        
+      
+      eksum=glsum(ek,npts)
+      dissipsum=glsum(dissip,npts)        
+      
+      if(nid.eq.0) write(123,*) eksum,dissipsum
+      
+      if (istep.eq.0) then
+         call outpost(vx,vy,vz,pr,t,'   ') ! "   " = output .f0 file prefix
+c         write(*,*) 'INITIAL OUTPOST DONE'
+      endif
+
+      if (istep.eq.19274) then
+         call outpost(vx,vy,vz,pr,t,'ref') ! "ref" = output .f0 file prefix
+      endif
+
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat()   ! This routine to modify element vertices
+      include 'SIZE'
+      include 'TOTAL'
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat2()  ! This routine to modify mesh coordinates
+      include 'SIZE'
+      include 'TOTAL'
+
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat3()
+      include 'SIZE'
+      include 'TOTAL'
+
+      return
+      end
+c-----------------------------------------------------------------------
