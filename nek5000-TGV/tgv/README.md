@@ -3,7 +3,7 @@
 **Code:** Nek5000  
 **Purpose:** Nek5000 vs NekLBM comparision for dissipation rate, energy evolution, and velocity profile for specific time 12.11  
 **Status:** Used in "A flux bounce-back scheme for the filtered Spectral Element Lattice Boltzmann Method"  
-**Location:** https://github.com/hlin004/Archive/edit/main/nek5000-TGV/tgv
+**Location:** https://github.com/hlin004/Archive/tree/main/nek5000-TGV/tgv
 
 ## Geometry/Mesh
 - Length L = 1
